@@ -1,0 +1,27 @@
+{
+  "name": "ws0010",
+  "version": "1.0.0",
+  "description": "Node.js driver for OLED displays using the WS0010 controller",
+  "main": "ws0010.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oisteink/ws0010.git"
+  },
+  "keywords": [
+    "oled",
+    "display",
+    "ws0010"
+  ],
+  "author": "Øistein Kjos <oistein.kjos@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oisteink/ws0010/issues"
+  },
+  "homepage": "https://github.com/oisteink/ws0010#readme",
+  "dependencies": {
+    "rpio": "^2.1.1"
+  }
+}
