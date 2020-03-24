@@ -72,6 +72,10 @@ const OLEDCommands = { //Empty values kept for clearity in code when setting val
 }
 
 class deviceInterface {
+    constructor(){
+        this.dataLength = 0;
+    }
+
     write(data, mode) {
         throw new Error('Abstract class\nData(data, mode) not implemented');
     }
@@ -90,11 +94,14 @@ class deviceInterface {
 class paralellInterface extends deviceInterface {
     constructor(rsPin = 7, enablePin = 37,  dataPins = [32, 33, 31, 29, 15, 18, 13, 22]) { //Datapins from D0 and up. Can be 4 or 8 of these
         super();
+
         this.rsPin = rsPin;
         rpio.open(this.rsPin, rpio.OUTPUT);
 
         this.enablePin = enablePin;
         rpio.open(this.enablePin, rpio.OUTPUT)
+
+        this.dataLength = dataPins.length;
 
         this.dataPins = dataPins; 
         for (const pin of dataPins) {
@@ -149,9 +156,9 @@ class paralell4bitInterface extends paralellInterface {
 }
 
 class ws0010 {
-    constructor(deviceInterface, dataLength = 8, displayLines = 2, fontHeight = 8, fontNumber = 3) {
+    constructor(deviceInterface, displayLines = 2, fontHeight = 8, fontNumber = 3) {
         this.deviceInterface = deviceInterface;
-        switch (dataLength) {
+        switch (this.deviceInterface.dataLength) {
             case 4: this.displayFunction = OLEDCommands.FUNCTIONS.DATA_LENGTH_4BIT; break;
             case 8: this.displayFunction = OLEDCommands.FUNCTIONS.DATA_LENGTH_8BIT; break;
             default: throw new Error('Only 4 or 8 bit data length supported');
@@ -316,10 +323,12 @@ class ws0010 {
 }
 
 class ws0010_graphic extends ws0010 {
-    constructor(deviceInterface, dataLength = 8, displayLines = 2, fontHeight = 8, fontNumber = 3) {
-        super(deviceInterface, dataLength, displayLines, fontHeight, fontNumber);
+    constructor(deviceInterface, displayWidth = 100, displayHeight = 16, fontHeight = 8, fontNumber = 0) {
+        super(deviceInterface, Math.floor(displayHeight / 8), fontHeight, fontNumber); 
+        this.displayWidth = displayWidth;
+        this.displayHeight = displayHeight;
         this.setGraphicsMode();
-        this.frameBuffer = new buffers.oledFrameBuffer(100, 16);
+        this.frameBuffer = new buffers.oledFrameBuffer(this.displayWidth, this.displayHeight);
     }
 
     clearBuffer(){
@@ -337,7 +346,7 @@ class ws0010_graphic extends ws0010 {
     }
 
     getPixel(x, y) {
-        result = this.frameBuffer.getPixel(x, y);
+        return this.frameBuffer.getPixel(x, y);
     }
 }
 

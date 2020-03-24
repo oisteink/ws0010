@@ -8,7 +8,7 @@ class frameBuffer {
     }
     
     isInRange(x, y) {
-        result = (x < this.width && x >= 0 && y < this.height && y >= 0);
+        return (x < this.width && x >= 0 && y < this.height && y >= 0);
     }
 
     putPixel(x, y, colour) {
